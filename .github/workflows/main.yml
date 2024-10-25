@@ -17,3 +17,13 @@ jobs:
           for myfile in $(find . -name "*.jpg"); do
             file $myfile;
           done
+
+  push:
+    name: push-memory
+    needs: test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Dockerfile
+        run: docker build -t rozennrd/memory:latest .

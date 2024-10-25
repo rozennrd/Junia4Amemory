@@ -55,19 +55,16 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Connect to ssh on same machine as runner
-        run: ssh localhost
+        run: |
+          # Pull the latest image
+          docker image pull rozennrd/junia:latest
 
-        # with:
-        #   host: localhost
-        #   username: rozenn
-        #   key: ${{ secrets.SSH_KEY }}
-        #   port: 22
-        #   script: |
-        #     # For debugging - print working directory and user
-        #     pwd
-        #     whoami
-        #     # Pull and run container
-        #     docker image pull rozennrd/latest
-        #     docker stop memory-container || true
-        #     docker rm memory-container || true
-        #     docker run -d --name memory-container -p 80:80 rozennrd/latest
+          # Stop and remove existing container if it exists
+          docker stop rozennrd/junia || true
+          docker rm rozennrd/junia || true
+
+          # Run new container
+          docker run -d \
+            --name memory-container \
+            -p 80:80 \
+            rozennrd/junia:latest

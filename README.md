@@ -18,8 +18,3 @@ Remplacer le fichier de config nginx (/etc/nginx/nginx.conf) par notre config sp
 Ajouter nos sources dans /var/concentration/html/
 
 Lancer le serveur nginx
-
-## Pour lancer le site sur le container Docker
-* S'assurer qu'aucun processus ne tourne sur le port 8080 de la machine
-* `docker run -it -p 8080:80 $(docker build -q .)`
-* Se connecter sur localhost:8080

@@ -48,3 +48,24 @@ jobs:
 
       - name: Push the Docker image
         run: docker push rozennrd/junia:latest
+
+  deploy:
+    name: deploy-memory
+    needs: push
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Connect to ssh on same machine as runner
+        run: sshpass -p ${{ secrets.SSH_KEY }} ssh localhost
+
+      - name: start tmux to be able to terminate ssh but keep process running
+        run: tmux
+
+      - name: Pull image from dockerhub
+        run: docker image pull rozennrd/latest
+
+      - name: Run docker image on port 80
+        run: docker run -p 80:80 rozennrd/latest
+
+      - name: close ssh session with self
+        run: exit

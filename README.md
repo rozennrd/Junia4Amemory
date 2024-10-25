@@ -2,6 +2,10 @@
 
 Ce repo permet de lancer un serveur web permettant de jouer au jeu du memory
 
+## Conventions
+
+Utilisation de [gitmoji](https://gitmoji.dev/) pour les messages de commit.
+
 ## Architecture
 
 Le dossier **html** contient les sources de notre site.

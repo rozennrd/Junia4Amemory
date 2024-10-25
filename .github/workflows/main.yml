@@ -1,0 +1,63 @@
+name: CI/CD pipeline
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  test:
+    name: test-memory
+    runs-on: self-hosted # Utilisation de votre runner self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test Memory
+        run: |
+          for myfile in $(find . -name "*.jpg"); do
+            file $myfile;
+          done
+
+  build:
+    name: build-memory
+    needs: test
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Dockerfile
+        run: docker build -t rozennrd/memory:latest .
+
+  push:
+    name: push-memory
+    needs: build
+    runs-on: self-hosted
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASS }}" | docker login -u "${{ secrets.DOCKERHUB_LOGIN }}" --password-stdin
+
+      - name: Tag the image to push
+        run: docker tag rozennrd/memory:latest rozennrd/junia:latest
+
+      - name: Push the Docker image
+        run: docker push rozennrd/junia:latest
+
+  deploy:
+    name: deploy-memory
+    needs: push
+    runs-on: self-hosted
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: Connect to ssh on same machine as runner
+        run: |
+          docker-compose down
+          docker-compose up -d

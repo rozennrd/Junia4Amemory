@@ -54,17 +54,10 @@ jobs:
     needs: push
     runs-on: self-hosted
     steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
       - name: Connect to ssh on same machine as runner
         run: |
-          # Pull the latest image
-          docker image pull rozennrd/junia:latest
-
-          # Stop and remove existing container if it exists
-          docker stop rozennrd/junia || true
-          docker rm rozennrd/junia || true
-
-          # Run new container
-          docker run -d \
-            --name memory-container \
-            -p 80:80 \
-            rozennrd/junia:latest
+          docker-compose down
+          docker-compose up -d

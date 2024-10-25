@@ -18,8 +18,8 @@ jobs:
             file $myfile;
           done
 
-  push:
-    name: push-memory
+  build:
+    name: build-memory
     needs: test
     runs-on: self-hosted
     steps:
